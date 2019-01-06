@@ -206,6 +206,6 @@ class StyleTransfer(object):
 
 if __name__ == '__main__':
     setup()
-    machine = StyleTransfer('content/deadpool.jpg', 'styles/pattern.jpg', 333, 250)
+    machine = StyleTransfer('content/deadpool.jpg', 'styles/harlequin.jpg', 333, 250)
     machine.build()
     machine.train(300)
