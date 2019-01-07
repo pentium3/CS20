@@ -78,6 +78,7 @@ class ConvNet(object):
     def inference_by_functions(self):
         '''
         Build the model according to the description we've shown in class
+        Define the model by using the functions above
         '''
         conv1 = conv_relu(inputs=self.img,
                           filters=32,
@@ -100,6 +101,10 @@ class ConvNet(object):
         self.logits = fully_connected(dropout, self.n_classes, 'logits')
 
     def inference_by_layers(self):
+        '''
+        Build the model according to the description we've shown in class
+        Define the model by using tf.layers
+        '''
         conv1 = tf.layers.conv2d(inputs=self.img,
                                   filters=32,
                                   kernel_size=[5, 5],

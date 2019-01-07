@@ -112,8 +112,8 @@ class StyleTransfer(object):
             2. we'll use the same coefficient for style loss as in the paper
             3. a and g are feature representation, not gram matrices
         """
-        N = a.shape[3]
-        M = a.shape[1] * a.shape[2]
+        N = a.shape[3]                      # number of filters
+        M = a.shape[1] * a.shape[2]         # height times width of the feature map
         G = self._gram_matrix(g, N, M)
         A = self._gram_matrix(a, N, M)
         return tf.reduce_sum((G-A) ** 2 / (4*N*N*M*M))
@@ -167,11 +167,14 @@ class StyleTransfer(object):
     def train(self, n_iters):
         skip_step = 1
         with tf.Session() as sess:
+            ## 1. initialize your variables
+            ## 2. create writer to write your graph
             sess.run(tf.global_variables_initializer())
             writer = tf.summary.FileWriter('./graphs/style_transfer', tf.get_default_graph())
-
             sess.run(self.input_img.assign(self.initial_img))
 
+            ## 3. create a saver object
+            ## 4. check if a checkpoint exists, restore the variables
             saver = tf.train.Saver()
             ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/checkpoint'))
             if ckpt and ckpt.model_checkpoint_path:
@@ -188,6 +191,7 @@ class StyleTransfer(object):
                 
                 sess.run(self.opt)
                 if (index + 1) % skip_step == 0:
+                    ## obtain generated image, loss, and summary                    
                     gen_image, total_loss, summary = sess.run([self.input_img, self.total_loss, self.summary_op])
                     
                     # add back the mean pixels we subtracted before
@@ -202,6 +206,7 @@ class StyleTransfer(object):
                     utils.save_image(filename, gen_image)
 
                     if (index + 1) % 20 == 0:
+                        # save the variables into a checkpoint
                         saver.save(sess, 'checkpoints/style_transfer', index)
 
 if __name__ == '__main__':
